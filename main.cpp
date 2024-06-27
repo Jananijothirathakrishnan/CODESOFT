@@ -1,92 +1,104 @@
 #include <iostream>
+#include <vector>
+#include <string>
 using namespace std;
-void displayMenu();
-void performAddition();
-void performSubtraction();
-void performMultiplication();
-void performDivision();
+struct Task {
+    string description;
+    bool completed;
+
+    Task(const string& desc) : description(desc), completed(false) {}
+};
+
+class ToDoList {
+private:
+    std::vector<Task> tasks;
+
+public:
+    void addTask(const string& description) {
+        tasks.emplace_back(description);
+        cout << "Task added: " << description << "\n";
+    }
+
+    void viewTasks() const {
+        if (tasks.empty()) {
+            cout << "No tasks available.\n";
+            return;
+        }
+
+        for (size_t i = 0; i < tasks.size(); ++i) {
+            std::cout << i + 1 << ". " << tasks[i].description
+                      << " [" << (tasks[i].completed ? "Completed" : "Pending") << "]\n";
+        }
+    }
+
+    void markTaskCompleted(size_t index) {
+        if (index > 0 && index <= tasks.size()) {
+            tasks[index - 1].completed = true;
+            cout << "Task " << index << " marked as completed.\n";
+        } else {
+            cout << "Invalid task number.\n";
+        }
+    }
+
+    void removeTask(size_t index) {
+        if (index > 0 && index <= tasks.size()) {
+            cout << "Task removed: " << tasks[index - 1].description << "\n";
+            tasks.erase(tasks.begin() + index - 1);
+        } else {
+            cout << "Invalid task number.\n";
+        }
+    }
+};
+
+void displayMenu() {
+    cout<<"-------------------------------------"<<endl;
+    cout << "1. Add Task\n";
+    cout << "2. View Tasks\n";
+    cout << "3. Mark Task as Completed\n";
+    cout << "4. Remove Task\n";
+    cout << "5. Exit\n";
+    cout<<"--------------------------------------"<<endl;
+}
 
 int main() {
+    ToDoList todoList;
     int choice;
+    string description;
+    size_t index;
 
     do {
         displayMenu();
-
-        cout << "Enter your choice (1-5): ";
-        cin >> choice;
+        std::cout << "Enter your choice: ";
+        std::cin >> choice;
 
         switch (choice) {
             case 1:
-                performAddition();
+                cout << "Enter task description: ";
+                cin.ignore();
+                getline(std::cin, description);
+                todoList.addTask(description);
                 break;
             case 2:
-                performSubtraction();
+                todoList.viewTasks();
                 break;
             case 3:
-                performMultiplication();
+                std::cout << "Enter task number to mark as completed: ";
+                cin >> index;
+                todoList.markTaskCompleted(index);
                 break;
             case 4:
-                performDivision();
+                std::cout << "Enter task number to remove: ";
+                cin >> index;
+                todoList.removeTask(index);
                 break;
             case 5:
-                cout << "Exiting the program." << endl;
+                cout << "Exiting...\n";
                 break;
             default:
-                cout << "Invalid choice. Please try again." << endl;
+                cout << "Invalid choice. Please try again.\n";
         }
-        
-        cout << endl;
+
     } while (choice != 5);
 
     return 0;
-}
-
-void displayMenu() {
-    cout << "Calculator Menu:" << endl;
-    cout << "1. Addition" << endl;
-    cout << "2. Subtraction" << endl;
-    cout << "3. Multiplication" << endl;
-    cout << "4. Division" << endl;
-    cout << "5. Exit" << endl;
-}
-
-void performAddition() {
-    double num1, num2;
-    cout << "Enter first number: ";
-    cin >> num1;
-    cout << "Enter second number: ";
-    cin >> num2;
-    cout << "Result: " << num1 + num2 << endl;
-}
-
-void performSubtraction() {
-    double num1, num2;
-    cout << "Enter first number: ";
-    cin >> num1;
-    cout << "Enter second number: ";
-    cin >> num2;
-    cout << "Result: " << num1 - num2 << endl;
-}
-
-void performMultiplication() {
-    double num1, num2;
-    cout << "Enter first number: ";
-    cin >> num1;
-    cout << "Enter second number: ";
-    cin >> num2;
-    cout << "Result: " << num1 * num2 << endl;
-}
-
-void performDivision() {
-    double num1, num2;
-    cout << "Enter first number: ";
-    cin >> num1;
-    cout << "Enter second number: ";
-    cin >> num2;
-
-    if (num2 != 0) {
-        cout << "Result: " << num1 / num2 << endl;
-    } else {
-        cout << "Error: Division by zero is not allowed." << endl;
-    }
 }
